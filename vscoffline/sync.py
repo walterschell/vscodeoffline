@@ -766,11 +766,13 @@ def main():
                 f'Checking and Downloading Updates for {len(extensions)} Extensions')
             count = 0
             bonus = []
+            last_log_time = None
             for identity in extensions:
                 log.debug(f'Fetching extension: {identity}')
-                if count % 100 == 0:
+                if last_log_time is None or time.time() - last_log_time > 5:
                     log.info(
                         f'Progress {count}/{len(extensions)} ({count/len(extensions)*100:.1f}%)')
+                    last_log_time = time.time()
                 extensions[identity].download_assets(
                     config.artifactdir_extensions)
                 bonus = extensions[identity].process_embedded_extensions(
