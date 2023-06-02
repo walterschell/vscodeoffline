@@ -239,12 +239,26 @@ class VSCExtensionDefinition(object):
                 destfile = os.path.join(ver_destination, f'{asset}')
                 create_tree(os.path.abspath(os.sep), (destfile,))
                 if not os.path.exists(destfile):
-                    log.debug(
-                        f'Downloading {self.identity} {asset} to {destfile}')
-                    result = requests.get(
-                        url, allow_redirects=True, timeout=vsc.TIMEOUT)
-                    with open(destfile, 'wb') as dest:
-                        dest.write(result.content)
+                    tries_left = 3
+                    while True:
+                        log.debug(
+                            f'Downloading {self.identity} {asset} to {destfile} from {url}')
+                        try:
+                            result = requests.get(
+                                url, allow_redirects=True, timeout=vsc.TIMEOUT)
+                            with open(destfile, 'wb') as dest:
+                                dest.write(result.content)
+                            break
+                        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
+                            if tries_left > 0:
+                                log.warning(
+                                    f'ConnectionError while downloading {self.identity} {asset} to {destfile} from {url}. Retrying.')
+                                tries_left -= 1
+                                time.sleep(3)
+                            else:
+                                log.error(
+                                    f'ConnectionError while downloading {self.identity} {asset} to {destfile} from {url}. Giving up.')
+                                break
 
     def process_embedded_extensions(self, destination, mp):
         """
