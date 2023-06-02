@@ -1,10 +1,8 @@
 from dataclasses import dataclass
 import os
-import sys
 import argparse
 import requests
 import pathlib
-import hashlib
 import uuid
 import logzero
 import logging
@@ -12,7 +10,6 @@ import json
 import time
 import datetime
 from typing import List
-from platform import release
 from logzero import logger as log
 from pytimeparse.timeparse import timeparse
 import vsc
@@ -209,7 +206,7 @@ class VSCExtensionVersionDefinition:
         return prerelease
 
     def __repr__(self):
-        strs = f"<{self.__class__.__name__}> {self.version} ({self.lastUpdate}) - Version: {self.version}"
+        strs = f"<{self.__class__.__name__}> {self.version} ({self.lastUpdated}) - Version: {self.version}"
         return strs
 
 
