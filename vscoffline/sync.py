@@ -614,8 +614,7 @@ class VSCMarketplace(object):
         strs = f"<{self.__class__.__name__}>"
         return strs
 
-
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser(
         description='Synchronises VSCode in an Offline Environment')
     parser.add_argument('--sync', dest='sync', action='store_true',
@@ -793,3 +792,6 @@ if __name__ == '__main__':
             log.info(
                 f'Going to sleep for {vsc.Utility.seconds_to_human_time(config.frequency)}')
             time.sleep(config.frequency)
+
+if __name__ == '__main__':
+    main()
